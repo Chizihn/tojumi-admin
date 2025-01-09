@@ -9,8 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#203643",
+        primaryHover: "#1a2d35",
+        secondary: "#FF6F61",
+        secondaryHover: "#e65d52",
+      },
+      fontFamily: {
+        nunito: ["Nunito", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"],
       },
     },
   },

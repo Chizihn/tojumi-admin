@@ -18,6 +18,14 @@ export enum ServiceType {
   YEARLY = "YEARLY",
 }
 
+export enum Status {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  ACTIVE = "ACTIVE",
+  EXPIRED = "EXPIRED",
+}
+
 export interface Auth {
   // Base user details
   firstName: string;
@@ -79,7 +87,7 @@ export interface CareBusiness {
   description: string;
   otherCertificates: string;
   homes: Carehome[];
-  isApproved: boolean;
+  isApproved: Status;
 }
 
 export interface Carehome {
@@ -128,14 +136,16 @@ export interface CareHomeIncomingRequest {
   price: number;
 }
 
+export enum Levels {
+  JUNIOR = "JUNIOR",
+  INTERMEDIATE = "INTERMEDIATE",
+  SENIOR = "SENIOR",
+}
+
 export interface Student {
   id: string;
   user: User;
-  hourlyPrice: number;
-  dailyPrice: number;
-  weeklyPrice: number;
-  monthlyPrice: number;
-  yearlyPrice: number;
+  level: Levels;
   incomingRequestIds: string[];
   incomingRequests: StudentRequest[];
   idCard: string;
@@ -146,7 +156,7 @@ export interface Student {
   activeCarehomes: Carehome[];
   availableCarehomes: Carehome[];
   clients: Dependent[];
-  isApproved: boolean;
+  isApproved: Status;
 }
 
 export interface StudentRequest {

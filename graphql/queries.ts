@@ -213,13 +213,8 @@ export const GET_STUDENTS = gql`
         }
         serviceType
         duration
-        price
       }
-      hourlyPrice
-      dailyPrice
-      weeklyPrice
-      monthlyPrice
-      yearlyPrice
+      level
       idCard
       certificate
       careExperienceLength
@@ -230,7 +225,7 @@ export const GET_STUDENTS = gql`
         lastName
         phoneNo
       }
-      activeCareHomess {
+      activeCareHomes {
         name
         yearEstablished
         location
@@ -298,13 +293,8 @@ export const GET_STUDENT = gql`
         }
         serviceType
         duration
-        price
       }
-      hourlyPrice
-      dailyPrice
-      weeklyPrice
-      monthlyPrice
-      yearlyPrice
+      level
       idCard
       certificate
       careExperienceLength
@@ -315,7 +305,7 @@ export const GET_STUDENT = gql`
         lastName
         phoneNo
       }
-      activeCareHomess {
+      activeCareHomes {
         name
         yearEstablished
         location

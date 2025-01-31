@@ -12,3 +12,19 @@ export const LOGIN = gql`
   }
   ${USER_DETAIL_FRAGMENT}
 `;
+
+export const APPROVE_CAREBUSINESS = gql`
+  mutation ApproveCareBusiness($id: ID!) {
+    approveCareBusiness(id: $id) {
+      isApproved
+    }
+  }
+`;
+
+export const APPROVE_STUDENT = gql`
+  mutation ApproveStudent($id: ID!) {
+    approveStudent(id: $id) {
+      isApproved
+    }
+  }
+`;

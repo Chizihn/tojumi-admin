@@ -104,7 +104,7 @@ export default function AllUsers() {
           >
             {filterType === "all"
               ? "All Users"
-              : capitalizeFirstChar(filterType) + "s"}
+              : capitalizeFirstChar(filterType)}
           </button>
         ))}
       </div>

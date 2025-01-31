@@ -9,6 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCarebusinessStore } from "@/store/fetch/useCarebusiness";
 import { useStudentStore } from "@/store/fetch/useStudent";
+import { capitalizeFirstChar } from "@/utils";
 
 export default function UserDetail({ params }: { params: { id: string } }) {
   const {
@@ -69,6 +70,10 @@ export default function UserDetail({ params }: { params: { id: string } }) {
                 <li>Other Certificates</li>
               </ul>
             </div>
+            <div>
+              <p className="text-gray-600 text-sm">Business approved?:</p>
+              <p>{carebusiness.isApproved || "N/A"} registered homes</p>
+            </div>
           </div>
         </div>
       );
@@ -89,6 +94,10 @@ export default function UserDetail({ params }: { params: { id: string } }) {
                 <li>ID Card</li>
                 <li>Certificates</li>
               </ul>
+            </div>
+            <div>
+              <p className="text-gray-600 text-sm">Access to jobs?::</p>
+              <p>{student.isApproved || "N/A"} registered homes</p>
             </div>
           </div>
         </div>
@@ -131,7 +140,9 @@ export default function UserDetail({ params }: { params: { id: string } }) {
                 </h1>
                 <p className="text-gray-600">
                   Account Type:{" "}
-                  <span className="capitalize">{currentUser.accountType}</span>
+                  <span className="capitalize">
+                    {capitalizeFirstChar(currentUser.accountType)}
+                  </span>
                 </p>
               </div>
             </div>

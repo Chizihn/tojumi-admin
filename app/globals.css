@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  [class*="overflow-"]::-webkit-scrollbar {
+    width: 0.5rem; /* Tailwind's `w-2` */
+  }
+  [class*="overflow-"]::-webkit-scrollbar-track {
+    border-radius: 9999px; /* Tailwind's `rounded-full` */
+    background-color: #f3f4f6; /* Tailwind's `bg-gray-100` */
+  }
+  [class*="overflow-"]::-webkit-scrollbar-thumb {
+    border-radius: 9999px; /* Tailwind's `rounded-full` */
+    background-color: #203643; /* Tailwind's `bg-primary` */
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #203643 #f3f4f6;
+}

@@ -1,15 +1,16 @@
 import { GET_STUDENT, GET_STUDENTS } from "@/graphql/queries";
 import client from "@/lib/client";
-import { CareBusiness, Student } from "@/types/user";
+import { Student } from "@/types/user";
 import { create } from "zustand";
 
 interface FetchStudentState {
-  studentUsers: CareBusiness[];
+  studentUsers: Student[];
   student: Student | null;
+
   loading: boolean;
   initialized: boolean;
   error: string | null;
-
+  setStudent: (students: Student) => void;
   fetchStudentUsers: () => Promise<void>;
   fetchStudent: (id: string) => Promise<void>;
 }
@@ -20,6 +21,8 @@ export const useStudentStore = create<FetchStudentState>((set) => ({
   loading: false,
   initialized: false,
   error: null,
+
+  setStudent: (student) => set({ student }),
 
   fetchStudentUsers: async () => {
     set({ loading: true, error: null });

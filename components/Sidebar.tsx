@@ -68,13 +68,13 @@ const sidebarStructure = [
         icon: <Building size={18} />,
         subLinks: [
           {
-            name: "All Provider",
+            name: "All Carebusiness",
             href: "/dashboard/providers",
             icon: <User size={18} />,
           },
           {
-            name: "All Properties",
-            href: "/providers/properties",
+            name: "All Carehomes",
+            href: "/dashboard/carehomes",
             icon: <List size={18} />,
           },
         ],
@@ -87,8 +87,19 @@ const sidebarStructure = [
     links: [
       {
         name: "Students",
-        href: "/dashboard/students",
         icon: <Book size={18} />,
+        subLinks: [
+          {
+            name: "All Students",
+            href: "/dashboard/students",
+            icon: <User size={18} />,
+          },
+          {
+            name: "All Guarantors",
+            href: "/dashboard/guarantors",
+            icon: <Users size={18} />,
+          },
+        ],
       },
     ],
   },

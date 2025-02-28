@@ -113,6 +113,10 @@ export const GET_CAREBUSINESSES = gql`
         paymentCurrency
         isApproved
       }
+      homes {
+        id
+        name
+      }
       cacRegDocument
       memorandumOfAssociation
       boardOfDirectors
@@ -143,6 +147,25 @@ export const GET_CAREBUSINESS = gql`
         longitude
         paymentCurrency
         isApproved
+      }
+      homes {
+        id
+        name
+        hourlyPrice
+        dailyPrice
+        weeklyPrice
+        monthlyPrice
+        yearlyPrice
+        description
+        yearEstablished
+        phoneNo
+        capacity
+        availableSlots
+        amenities
+        imagesVideos
+        location
+        latitude
+        longitude
       }
       cacRegDocument
       memorandumOfAssociation
@@ -300,6 +323,32 @@ export const GET_STUDENT = gql`
       careExperienceLength
       accessToTransport
       isApproved
+      careServiceTypes {
+        id
+        name
+      }
+      guarantorEmails
+      guarantors {
+        id
+        student {
+          id
+          user {
+            firstName
+            lastName
+            email
+          }
+        }
+        firstName
+        lastName
+        email
+        phoneNo
+        bvn
+        passport
+        occupation
+        address
+        verified
+        createdAt
+      }
       clients {
         firstName
         lastName
@@ -891,6 +940,86 @@ export const GET_STUDENT_PROFILE = gql`
       careExperienceLength
       accessToTransport
       isApproved
+    }
+  }
+`;
+
+export const GET_GUARANTORS = gql`
+  query GetGuarantors {
+    getGuarantors {
+      id
+      student {
+        id
+        user {
+          firstName
+          lastName
+          email
+          phoneNo
+        }
+      }
+      firstName
+      lastName
+      email
+      phoneNo
+      bvn
+      passport
+      occupation
+      address
+      verified
+      createdAt
+    }
+  }
+`;
+export const GET_GUARANTOR = gql`
+  query GetGuarantors($id: ID!) {
+    getGuarantor(id: $id) {
+      id
+      student {
+        id
+        user {
+          firstName
+          lastName
+          email
+          phoneNo
+        }
+      }
+      firstName
+      lastName
+      email
+      phoneNo
+      bvn
+      passport
+      occupation
+      address
+      verified
+      createdAt
+    }
+  }
+`;
+
+export const GET_GUARANTOR_BY_STUDENT_ID = gql`
+  query GetGuarantorsByStudentId($studentId: ID!) {
+    getGuarantorsByStudentId(studentId: $studentId) {
+      id
+      student {
+        id
+        user {
+          firstName
+          lastName
+          email
+          phoneNo
+        }
+      }
+      firstName
+      lastName
+      email
+      phoneNo
+      bvn
+      passport
+      occupation
+      address
+      verified
+      createdAt
     }
   }
 `;

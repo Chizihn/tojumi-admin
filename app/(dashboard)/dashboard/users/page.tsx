@@ -2,27 +2,22 @@
 
 import Loader from "@/components/Loader";
 import { useFetchDataStore } from "@/store/useFetchData";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { capitalizeFirstChar } from "@/utils";
 import Link from "next/link";
+import Pagination from "@/components/Pagination";
+import { usePagination } from "@/app/hooks/usePagination";
 
 export default function AllUsers() {
   const { totalUsers, loading, initialized, fetchTotalUsers } =
     useFetchDataStore();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchTotalUsers();
   }, [fetchTotalUsers]);
-
-  useEffect(() => {
-    const page = Number(searchParams.get("page")) || 1;
-    setCurrentPage(page);
-  }, [searchParams]);
 
   const filter = searchParams.get("filter") || "all";
 
@@ -48,44 +43,15 @@ export default function AllUsers() {
     [totalUsers, filter]
   );
 
-  // Memoize pagination calculations
-  const { totalPages, paginatedUsers, startIndex } = useMemo(() => {
-    const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedUsers = filteredUsers.slice(
-      startIndex,
-      startIndex + itemsPerPage
-    );
-    return { totalPages, paginatedUsers, startIndex };
-  }, [filteredUsers, currentPage, itemsPerPage]);
-
-  // Memoize page change handler
-  const handlePageChange = useCallback(
-    (page: number) => {
-      const params = new URLSearchParams(searchParams);
-      params.set("page", page.toString());
-      router.push(`?${params.toString()}`);
-      setCurrentPage(page);
-    },
-    [searchParams, router]
-  );
-
-  // Memoize page numbers generation
-  const pageNumbers = useMemo(() => {
-    const numbers = [];
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, currentPage - 2);
-    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage < maxVisiblePages - 1) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      numbers.push(i);
-    }
-    return numbers;
-  }, [currentPage, totalPages]);
+  // Use the pagination hook
+  const {
+    paginatedItems: paginatedUsers,
+    currentPage,
+    startIndex,
+  } = usePagination(filteredUsers, {
+    itemsPerPage: 50,
+    useQueryParams: true,
+  });
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -120,6 +86,7 @@ export default function AllUsers() {
                 <th className="py-2">Name</th>
                 <th className="py-2">Account Type</th>
                 <th className="py-2">Verified</th>
+                <th className="py-2">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -151,49 +118,12 @@ export default function AllUsers() {
             </tbody>
           </table>
 
-          <div className="flex justify-center items-center gap-2">
-            <button
-              onClick={() => handlePageChange(1)}
-              disabled={currentPage === 1}
-              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
-            >
-              First
-            </button>
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
-            >
-              Prev
-            </button>
-
-            {pageNumbers.map((page) => (
-              <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                className={`px-3 py-1 rounded ${
-                  currentPage === page ? "bg-primary text-white" : "bg-gray-200"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
-            >
-              Next
-            </button>
-            <button
-              onClick={() => handlePageChange(totalPages)}
-              disabled={currentPage === totalPages}
-              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
-            >
-              Last
-            </button>
-          </div>
+          <Pagination
+            totalItems={filteredUsers.length}
+            itemsPerPage={50}
+            currentPage={currentPage}
+            preserveParams={true}
+          />
         </div>
       ) : (
         <div>

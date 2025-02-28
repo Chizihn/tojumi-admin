@@ -10,11 +10,51 @@ export default function AdminDashboardLayout({
   children: React.ReactNode;
 }) {
   const [initialized, setInitialized] = useState<boolean>(false);
+  // const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+
+  // const { fetchTotalUsers } = useFetchDataStore();
+
+  // const { fetchFamilyUsers } = useFamilyStore();
+
+  // const { fetchCarebusinessUsers } = useCarebusinessStore();
+
+  // const { fetchStudentUsers } = useStudentStore();
+
+  // Initialize component
   useEffect(() => {
     setInitialized(true);
   }, []);
 
+  // Fetch all data for the admin dashboard
+  // useEffect(() => {
+  //   if (initialized) {
+  //     const loadAllData = async () => {
+  //       try {
+  //         await Promise.all([
+  //           fetchTotalUsers(),
+  //           fetchFamilyUsers(),
+  //           fetchCarebusinessUsers(),
+  //           fetchStudentUsers(),
+  //         ]);
+  //       } catch (error) {
+  //         console.error("Error loading dashboard data:", error);
+  //       } finally {
+  //         setIsDataLoaded(true);
+  //       }
+  //     };
+
+  //     loadAllData();
+  //   }
+  // }, [
+  //   initialized,
+  //   fetchTotalUsers,
+  //   fetchFamilyUsers,
+  //   fetchCarebusinessUsers,
+  //   fetchStudentUsers,
+  // ]);
+
   if (!initialized) return <Loader />;
+
   return (
     <section className="max-h-screen w-full flex">
       {/* Sidebar */}

@@ -6,6 +6,7 @@ import { create } from "zustand";
 interface FetchCarebusinessState {
   carebusinessUsers: CareBusiness[];
   carebusiness: CareBusiness | null;
+  setCarebusiness: (carebusiness: CareBusiness) => void;
   loading: boolean;
   initialized: boolean;
   error: string | null;
@@ -20,6 +21,8 @@ export const useCarebusinessStore = create<FetchCarebusinessState>((set) => ({
   loading: false,
   initialized: false,
   error: null,
+
+  setCarebusiness: (carebusiness) => set({ carebusiness }),
 
   fetchCarebusinessUsers: async () => {
     set({ loading: true, error: null });
@@ -44,7 +47,7 @@ export const useCarebusinessStore = create<FetchCarebusinessState>((set) => ({
 
       if (!fetchedCarebusinessUsers) {
         console.warn("No users");
-        set({ carebusinessUsers: [], initialized: true });
+        set({ carebusinessUsers: [] });
         return;
       }
 
@@ -55,7 +58,7 @@ export const useCarebusinessStore = create<FetchCarebusinessState>((set) => ({
         error: (error as Error).message || "Failed to fetch carebusiness users",
       });
     } finally {
-      set({ loading: false });
+      set({ loading: false, initialized: true });
     }
   },
 

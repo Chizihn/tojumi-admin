@@ -1,10 +1,11 @@
 import { GET_ALL_CAREHOMES } from "@/graphql/queries";
 import client from "@/lib/client";
-import { CareBusiness } from "@/types/user";
+import { Carehome } from "@/types/user";
 import { create } from "zustand";
 
 interface FetchCarehomeState {
-  carehomes: CareBusiness[];
+  carehomes: Carehome[];
+  carehome: Carehome | null;
   loading: boolean;
   initialized: boolean;
   error: string | null;
@@ -14,6 +15,7 @@ interface FetchCarehomeState {
 
 export const useCarehomeStore = create<FetchCarehomeState>((set) => ({
   carehomes: [],
+  carehome: null,
   loading: false,
   initialized: false,
   error: null,
@@ -41,7 +43,7 @@ export const useCarehomeStore = create<FetchCarehomeState>((set) => ({
 
       if (!fetchedCarehomes) {
         console.warn("No carehome");
-        set({ carehomes: [], initialized: true });
+        set({ carehomes: [] });
         return;
       }
 
@@ -52,7 +54,7 @@ export const useCarehomeStore = create<FetchCarehomeState>((set) => ({
         error: (error as Error).message || "Failed to fetch carehomes",
       });
     } finally {
-      set({ loading: false });
+      set({ loading: false, initialized: true });
     }
   },
 }));

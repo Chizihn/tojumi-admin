@@ -80,6 +80,7 @@ export interface Family {
 
 export interface CareBusiness {
   id: string;
+  user: User;
   cacRegDocument: string;
   memorandumOfAssociation: string;
   boardOfDirectors: string[];
@@ -88,6 +89,15 @@ export interface CareBusiness {
   otherCertificates: string;
   homes: Carehome[];
   isApproved: Status;
+}
+
+export interface CareHomeReview {
+  id: string;
+  date: string;
+  carehome: Carehome;
+  dependent: Dependent;
+  rating: number;
+  review: string;
 }
 
 export interface Carehome {
@@ -115,6 +125,8 @@ export interface Carehome {
   location: string;
   latitude: number;
   longitude: number;
+  reviews: CareHomeReview;
+  isApproved: Status;
 }
 
 export interface CarehomeAvailability {
@@ -142,30 +154,65 @@ export enum Levels {
   SENIOR = "SENIOR",
 }
 
+export interface CareServiceType {
+  id: string;
+  name: string;
+}
+
+export interface Guarantor {
+  id: string;
+  student: Student;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNo: string;
+  bvn: string;
+  passport: string;
+  occupation: string;
+  address: string;
+  verified: string;
+  createdAt: string;
+}
+
 export interface Student {
   id: string;
   user: User;
   level: Levels;
-  incomingRequestIds: string[];
+  hourlyPrice: number;
+  dailyPrice: number;
+  weeklyPrice: number;
+  monthlyPrice: number;
+  yearlyPrice: number;
   incomingRequests: StudentRequest[];
   idCard: string;
   certificate: string;
-  careExperienceLength: string;
+  careExperienceLength: number;
   accessToTransport: boolean;
   availability: StudentAvailability;
   activeCarehomes: Carehome[];
   availableCarehomes: Carehome[];
   clients: Dependent[];
   isApproved: Status;
+  careServiceTypes: CareServiceType[];
+  guarantorEmails: string[];
+  guarantors: Guarantor[];
 }
 
 export interface StudentRequest {
   id: string;
   status: string;
+  currentState: string;
+  paymentStatus: string;
+  student: Student;
   careHome: Carehome;
   serviceType: ServiceType;
   duration: number;
   price: number;
+  createdAt: string;
+  acceptedAt: string;
+  scheduledStartDate: string;
+  scheduledStartTime: string;
+  expiresAt: string;
 }
 
 export interface StudentAvailability {

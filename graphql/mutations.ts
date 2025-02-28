@@ -14,17 +14,66 @@ export const LOGIN = gql`
 `;
 
 export const APPROVE_CAREBUSINESS = gql`
-  mutation ApproveCareBusiness($id: ID!) {
+  mutation ApproveCarebusiness($id: ID!) {
     approveCareBusiness(id: $id) {
+      id
+      isApproved
+    }
+  }
+`;
+
+export const REJECT_CAREBUSINESS = gql`
+  mutation RejectCarebusiness($id: ID!) {
+    rejectCareBusiness(id: $id) {
+      id
       isApproved
     }
   }
 `;
 
 export const APPROVE_STUDENT = gql`
-  mutation ApproveStudent($id: ID!) {
-    approveStudent(id: $id) {
+  mutation ApproveStudent($id: ID!, $level: Levels!) {
+    approveStudent(id: $id, level: $level) {
+      id
       isApproved
     }
+  }
+`;
+
+export const REJECT_STUDENT = gql`
+  mutation RejectStudent($id: ID!) {
+    rejectCareBusiness(id: $id) {
+      id
+      isApproved
+    }
+  }
+`;
+
+export const APPROVE_CAREHOME = gql`
+  mutation ApproveCarehome($careHomeId: ID!) {
+    approveCareHome(careHomeId: $careHomeId) {
+      id
+      isApproved
+    }
+  }
+`;
+export const REJECT_CAREHOME = gql`
+  mutation RejectCarehome($careHomeId: ID!) {
+    rejectCareHome(careHomeId: $careHomeId) {
+      id
+      isApproved
+    }
+  }
+`;
+
+export const ACCEPT_GUARANTOR = gql`
+  mutation AcceptGuarantor($id: ID!) {
+    acceptGuarantor(id: $id)
+  }
+`;
+
+export const REJECT_GUARANTOR = gql`
+  mutation RejectGuarantor($id: ID!) {
+    rejectGuarantor(id: $id)
   }
 `;

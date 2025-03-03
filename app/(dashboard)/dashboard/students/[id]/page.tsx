@@ -4,7 +4,7 @@ import Loader from "@/components/Loader";
 import { DEFAULT_PROFILE_IMAGE_URL } from "@/constants/default";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { capitalizeFirstChar } from "@/utils";
 import client from "@/lib/client";
@@ -13,7 +13,21 @@ import { GET_STUDENT, GET_STUDENTS } from "@/graphql/queries";
 import { toast } from "react-toastify";
 import Button from "@/components/ui/Button";
 import { useStudentStore } from "@/store/fetch/useStudent";
-import { Status } from "@/types/user";
+import { Guarantor, Status } from "@/types/user";
+
+import { gql, useQuery } from "@apollo/client";
+
+export const GET_GUARANTORS_BY_ID = gql`
+  query GetGuarantorsByStudentId($studentId: ID!) {
+    getGuarantorsByStudentId(studentId: $studentId) {
+      id
+      firstName
+      lastName
+      email
+      phoneNo
+    }
+  }
+`;
 
 export default function StudentDetail({ params }: { params: { id: string } }) {
   const { student, loading, setStudent, fetchStudent } = useStudentStore();
@@ -26,6 +40,11 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
   }, [params.id, fetchStudent]);
 
   const currentUser = student?.user;
+
+  const { data, loading: guarantorsLoading } = useQuery(GET_GUARANTORS_BY_ID, {
+    variables: { studentId: params.id },
+    skip: !params.id,
+  });
 
   const handleApproveStudent = async () => {
     try {
@@ -82,6 +101,8 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
       setActionType("");
     }
   };
+
+  const guarantors: Guarantor[] = data?.getGuarantorsByStudentId || [];
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -185,13 +206,19 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
               </div>
               <div>
                 <p className="text-gray-600 text-sm">Guarantors:</p>
-                <p>
-                  {student.guarantors?.map((guarantor) => (
-                    <span key={guarantor.id}>
-                      {guarantor?.firstName} {guarantor?.lastName}
-                    </span>
-                  )) || "N/A"}{" "}
-                </p>
+                <div className="flex gap-4">
+                  {guarantorsLoading ? (
+                    <LoaderCircle className="animate-spin" />
+                  ) : guarantors && guarantors.length > 0 ? (
+                    guarantors.map((guarantor) => (
+                      <span key={guarantor.id}>
+                        {guarantor.firstName} {guarantor.lastName}
+                      </span>
+                    ))
+                  ) : (
+                    <span>No guarantors found</span>
+                  )}
+                </div>
               </div>
 
               <div>

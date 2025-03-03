@@ -951,6 +951,7 @@ export const GET_GUARANTORS = gql`
       student {
         id
         user {
+          id
           firstName
           lastName
           email
@@ -977,6 +978,7 @@ export const GET_GUARANTOR = gql`
       student {
         id
         user {
+          id
           firstName
           lastName
           email
@@ -1004,6 +1006,7 @@ export const GET_GUARANTOR_BY_STUDENT_ID = gql`
       student {
         id
         user {
+          id
           firstName
           lastName
           email

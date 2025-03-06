@@ -7,25 +7,27 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { capitalizeFirstChar } from "@/utils";
-import client from "@/lib/client";
-import { APPROVE_STUDENT, REJECT_STUDENT } from "@/graphql/mutations";
-import {
-  GET_GUARANTORS_BY_ID,
-  GET_STUDENT,
-  GET_STUDENTS,
-} from "@/graphql/queries";
-import { toast } from "react-toastify";
+import { GET_GUARANTORS_BY_ID } from "@/graphql/queries";
 import Button from "@/components/ui/Button";
 import { useStudentStore } from "@/store/fetch/useStudent";
-import { Guarantor, Status } from "@/types/user";
+import { Guarantor, Levels } from "@/types/user";
 
 import { useQuery } from "@apollo/client";
 
 export default function StudentDetail({ params }: { params: { id: string } }) {
-  const { student, loading, setStudent, fetchStudent } = useStudentStore();
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
-  const [actionType, setActionType] = useState<string>("");
   const router = useRouter();
+
+  const {
+    student,
+    loading,
+    fetchStudent,
+    buttonLoading,
+    actionType,
+    approveStudent,
+    rejectStudent,
+  } = useStudentStore();
+
+  const [selectedLevel, setSelectedLevel] = useState<Levels | null>(null);
 
   useEffect(() => {
     fetchStudent(params.id);
@@ -38,60 +40,13 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
     skip: !params.id,
   });
 
-  const handleApproveStudent = async () => {
-    try {
-      setButtonLoading(true);
-      setActionType("approve");
-      const response = await client.mutate({
-        mutation: APPROVE_STUDENT,
-        variables: { id: params.id },
-        refetchQueries: [
-          { query: GET_STUDENT, variables: { id: params.id } },
-          { query: GET_STUDENTS },
-        ],
-      });
-      if (response?.data?.approveStudent) {
-        if (!student) {
-          return;
-        }
-        setStudent({ ...student, isApproved: Status.APPROVED });
-        toast.success("Approved student!");
-      }
-    } catch (error) {
-      toast.error("Failed to approve");
-      console.error("Error approving student:", error);
-    } finally {
-      setButtonLoading(false);
-      setActionType("");
-    }
-  };
+  const handleApproveStudent = async (id: string, level: Levels) => {
+    console.log("approve stud cll", {
+      id,
+      level,
+    });
 
-  const handleRejectStudent = async () => {
-    try {
-      setButtonLoading(true);
-      setActionType("reject");
-      const response = await client.mutate({
-        mutation: REJECT_STUDENT,
-        variables: { id: params.id },
-        refetchQueries: [
-          { query: GET_STUDENT, variables: { id: params.id } },
-          { query: GET_STUDENTS },
-        ],
-      });
-      if (response?.data?.rejectStudent) {
-        if (!student) {
-          return;
-        }
-        setStudent({ ...student, isApproved: Status.REJECTED });
-        toast.success("Rejected student!");
-      }
-    } catch (error) {
-      toast.error("Failed to reject");
-      console.error("Error rejecting student:", error);
-    } finally {
-      setButtonLoading(false);
-      setActionType("");
-    }
+    await approveStudent(id, level);
   };
 
   const guarantors: Guarantor[] = data?.getGuarantorsByStudentId || [];
@@ -218,25 +173,48 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
                 <p>{capitalizeFirstChar(String(student?.isApproved))}</p>
 
                 {student?.isApproved === "PENDING" && (
-                  <div className="flex item-center my-4 gap-5">
-                    <Button
-                      variant="primary"
-                      type="button"
-                      loading={buttonLoading && actionType === "approve"}
-                      disabled={buttonLoading}
-                      onClick={handleApproveStudent}
+                  <div className="mt-3">
+                    <select
+                      value={String(selectedLevel)}
+                      onChange={(e) =>
+                        setSelectedLevel(e.target.value as Levels)
+                      }
+                      className="border p-2 rounded py-2"
                     >
-                      Approve
-                    </Button>
-                    <Button
-                      variant="danger"
-                      type="button"
-                      loading={buttonLoading && actionType === "reject"}
-                      disabled={buttonLoading}
-                      onClick={handleRejectStudent}
-                    >
-                      Reject
-                    </Button>
+                      <option value="" disabled>
+                        Select Level
+                      </option>
+                      {Object.values(Levels).map((level) => (
+                        <option key={level} value={level}>
+                          {capitalizeFirstChar(level)}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="flex item-center my-4 gap-5">
+                      <Button
+                        variant="primary"
+                        type="button"
+                        loading={buttonLoading && actionType === "approve"}
+                        disabled={buttonLoading || !selectedLevel}
+                        onClick={() =>
+                          handleApproveStudent(
+                            student.id,
+                            selectedLevel as Levels
+                          )
+                        }
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        variant="danger"
+                        type="button"
+                        loading={buttonLoading && actionType === "reject"}
+                        disabled={buttonLoading}
+                        onClick={() => rejectStudent(student.id)}
+                      >
+                        Reject
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>

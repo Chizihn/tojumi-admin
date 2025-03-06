@@ -35,6 +35,7 @@ export const APPROVE_STUDENT = gql`
   mutation ApproveStudent($id: ID!, $level: Levels!) {
     approveStudent(id: $id, level: $level) {
       id
+      level
       isApproved
     }
   }

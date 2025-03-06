@@ -135,6 +135,15 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
                 <p className="text-gray-600 text-sm">Care Experience</p>
                 <p>{student.careExperienceLength}</p>
               </div>
+
+              <div>
+                {student.level && (
+                  <div>
+                    <p className="text-gray-600 text-sm">Level</p>
+                    <p>{capitalizeFirstChar(student.level)}</p>
+                  </div>
+                )}
+              </div>
               <div>
                 <p className="text-gray-600 text-sm">Documents</p>
                 <ul className="list-disc pl-5 text-sm">
@@ -181,9 +190,7 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
                       }
                       className="border p-2 rounded py-2"
                     >
-                      <option value="" disabled>
-                        Select Level
-                      </option>
+                      <option value="">Select Level</option>
                       {Object.values(Levels).map((level) => (
                         <option key={level} value={level}>
                           {capitalizeFirstChar(level)}

@@ -52,7 +52,7 @@ export interface User extends Auth {
 
 export interface Dependent {
   id: string;
-  family: User;
+  family: Family;
   firstName: string;
   lastName: string;
   phoneNo: string;
@@ -66,10 +66,6 @@ export interface Dependent {
   relationship: string;
   dateOfBirth: string;
   medicalConcerns: string[];
-  // appointments: DependentAppointment[];
-  // careLogs: DependentCarelog[];
-  // careHomes: ProviderUserCarehome[];
-  // outgoingRequests: OutgoingRequests;
 }
 
 export interface Family {

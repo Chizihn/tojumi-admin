@@ -7,11 +7,12 @@ import { useRouter } from "next/navigation";
 import { capitalizeFirstChar } from "@/utils";
 import client from "@/lib/client";
 
-import { GET_GUARANTOR } from "@/graphql/queries";
+import { GET_GUARANTOR, GET_GUARANTORS } from "@/graphql/queries";
 import { toast } from "react-toastify";
 // import Button from "@/components/ui/Button";
 import { Guarantor } from "@/types/user";
-// import { ACCEPT_GUARANTOR, REJECT_GUARANTOR } from "@/graphql/mutations";
+import { ACCEPT_GUARANTOR, REJECT_GUARANTOR } from "@/graphql/mutations";
+import Button from "@/components/ui/Button";
 
 export default function GuarantorDetail({
   params,
@@ -20,8 +21,8 @@ export default function GuarantorDetail({
 }) {
   const [guarantor, setGuarantor] = useState<Guarantor | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  // const [buttonLoading, setButtonLoading] = useState<boolean>(false);
-  // const [actionType, setActionType] = useState<string>("");
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+  const [actionType, setActionType] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -47,63 +48,63 @@ export default function GuarantorDetail({
     fetchGuarantor();
   }, [params.id]);
 
-  // const handleVerifyGuarantor = async () => {
-  //   try {
-  //     setButtonLoading(true);
-  //     setActionType("verify");
-  //     const response = await client.mutate({
-  //       mutation: ACCEPT_GUARANTOR,
-  //       variables: { id: params.id },
-  //       refetchQueries: [
-  //         { query: GET_GUARANTOR, variables: { id: params.id } },
-  //         { query: GET_GUARANTORS },
-  //       ],
-  //     });
-  //     if (response?.data?.verifyGuarantor) {
-  //       toast.success("Guarantor verified successfully!");
-  //       // Update local state
-  //       setGuarantor({
-  //         ...guarantor,
-  //         verified: "true",
-  //       } as Guarantor);
-  //     }
-  //   } catch (error) {
-  //     toast.error("Failed to verify guarantor");
-  //     console.error("Error verifying guarantor:", error);
-  //   } finally {
-  //     setButtonLoading(false);
-  //     setActionType("");
-  //   }
-  // };
+  const handleVerifyGuarantor = async () => {
+    try {
+      setButtonLoading(true);
+      setActionType("verify");
+      const response = await client.mutate({
+        mutation: ACCEPT_GUARANTOR,
+        variables: { id: params.id },
+        refetchQueries: [
+          { query: GET_GUARANTOR, variables: { id: params.id } },
+          { query: GET_GUARANTORS },
+        ],
+      });
+      if (response?.data?.verifyGuarantor) {
+        toast.success("Guarantor verified successfully!");
+        // Update local state
+        setGuarantor({
+          ...guarantor,
+          verified: "true",
+        } as Guarantor);
+      }
+    } catch (error) {
+      toast.error("Failed to verify guarantor");
+      console.error("Error verifying guarantor:", error);
+    } finally {
+      setButtonLoading(false);
+      setActionType("");
+    }
+  };
 
-  // const handleRejectGuarantor = async () => {
-  //   try {
-  //     setButtonLoading(true);
-  //     setActionType("reject");
-  //     const response = await client.mutate({
-  //       mutation: REJECT_GUARANTOR,
-  //       variables: { id: params.id },
-  //       refetchQueries: [
-  //         { query: GET_GUARANTOR, variables: { id: params.id } },
-  //         { query: GET_GUARANTORS },
-  //       ],
-  //     });
-  //     if (response?.data?.rejectGuarantor) {
-  //       toast.success("Guarantor rejected successfully!");
-  //       // Update local state
-  //       setGuarantor({
-  //         ...guarantor,
-  //         verified: "false",
-  //       } as Guarantor);
-  //     }
-  //   } catch (error) {
-  //     toast.error("Failed to reject guarantor");
-  //     console.error("Error rejecting guarantor:", error);
-  //   } finally {
-  //     setButtonLoading(false);
-  //     setActionType("");
-  //   }
-  // };
+  const handleRejectGuarantor = async () => {
+    try {
+      setButtonLoading(true);
+      setActionType("reject");
+      const response = await client.mutate({
+        mutation: REJECT_GUARANTOR,
+        variables: { id: params.id },
+        refetchQueries: [
+          { query: GET_GUARANTOR, variables: { id: params.id } },
+          { query: GET_GUARANTORS },
+        ],
+      });
+      if (response?.data?.rejectGuarantor) {
+        toast.success("Guarantor rejected successfully!");
+        // Update local state
+        setGuarantor({
+          ...guarantor,
+          verified: "false",
+        } as Guarantor);
+      }
+    } catch (error) {
+      toast.error("Failed to reject guarantor");
+      console.error("Error rejecting guarantor:", error);
+    } finally {
+      setButtonLoading(false);
+      setActionType("");
+    }
+  };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -218,7 +219,7 @@ export default function GuarantorDetail({
               <div>
                 <p className="text-gray-600 text-sm">Verification Status</p>
                 <p>{capitalizeFirstChar(guarantor.verified || "N/A")}</p>
-                {/* {!guarantor.verified && (
+                {!guarantor.verified && (
                   <div className="flex items-center my-4 gap-5">
                     <Button
                       variant="primary"
@@ -239,7 +240,7 @@ export default function GuarantorDetail({
                       Reject
                     </Button>
                   </div>
-                )} */}
+                )}
               </div>
               <div className="my-2">
                 Visit the specific student profile to verify guarantor.

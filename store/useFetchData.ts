@@ -1,5 +1,6 @@
 import { GET_USER, GET_USERS } from "@/graphql/queries";
 import client from "@/lib/client";
+import { queryClient } from "@/lib/queryClient";
 import { User } from "@/types/user";
 import { create } from "zustand";
 
@@ -9,6 +10,7 @@ interface FetchDataState {
   loading: boolean;
   initialized: boolean;
   error: string | null;
+  actionType: string;
   fetchTotalUsers: () => Promise<void>;
   fetchCurrentUser: (id: string) => Promise<void>;
 }
@@ -19,31 +21,35 @@ export const useFetchDataStore = create<FetchDataState>((set) => ({
   loading: false,
   initialized: false,
   error: null,
+  actionType: "",
 
-  //Fetching clients of a carehome by the provider id
   fetchTotalUsers: async () => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null, actionType: "fetchTotalUsers" });
 
     try {
       console.log("Fetching all users");
 
-      const response = await client.query({
-        query: GET_USERS,
-        fetchPolicy: "cache-first",
+      const fetchedTotalUsers = await queryClient.fetchQuery({
+        queryKey: ["getUsers"],
+        queryFn: async () => {
+          const res = await client.query({
+            query: GET_USERS,
+            fetchPolicy: "network-only",
+          });
+
+          if (res.errors) {
+            console.error("GraphQL Errors:", res.errors);
+            throw new Error(res.errors[0]?.message || "GraphQL error");
+          }
+          return res.data?.getUsers || [];
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
       });
 
-      if (response.errors) {
-        console.error("GraphQL Errors:", response.errors);
-        throw new Error(response.errors[0]?.message || "GraphQL error");
-      }
+      console.log("Fetched users:", fetchedTotalUsers);
 
-      // Log the full homes response
-      console.log("Fetchich users response:", response.data);
-
-      const fetchedTotalUsers = response.data?.getUsers || [];
-
-      if (!fetchedTotalUsers) {
-        console.warn("No users");
+      if (!fetchedTotalUsers.length) {
+        console.warn("No users found");
         set({ totalUsers: [], initialized: true });
         return;
       }
@@ -51,38 +57,50 @@ export const useFetchDataStore = create<FetchDataState>((set) => ({
       set({ totalUsers: fetchedTotalUsers, initialized: true });
     } catch (error) {
       console.error("Error fetching users:", error);
-      set({
-        error: (error as Error).message || "Failed to fetch users",
-      });
+      set({ error: (error as Error).message || "Failed to fetch users" });
     } finally {
-      set({ loading: false });
+      set({ loading: false, actionType: "" });
     }
   },
 
   fetchCurrentUser: async (id: string) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null, actionType: "fetchCurrentUser" });
+
     try {
-      const { data } = await client.query({
-        query: GET_USER,
-        variables: { id },
-        fetchPolicy: "network-only", // Force fetch from network
+      console.log(`Fetching user with ID: ${id}`);
+
+      const fetchedCurrentUser = await queryClient.fetchQuery({
+        queryKey: ["getUser", id],
+        queryFn: async () => {
+          const res = await client.query({
+            query: GET_USER,
+            variables: { id },
+            fetchPolicy: "network-only",
+          });
+
+          if (res.errors) {
+            console.error("GraphQL Errors:", res.errors);
+            throw new Error(res.errors[0]?.message || "GraphQL error");
+          }
+          return res.data?.getUser || null;
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
       });
 
-      const fetchedCurrentUser = data?.getUser;
+      console.log("Fetched user:", fetchedCurrentUser);
 
-      // Update both the single dependent and the dependents list
-      set({
-        currentUser: fetchedCurrentUser,
-        initialized: true,
-      });
+      if (!fetchedCurrentUser) {
+        console.warn("No user found");
+        set({ currentUser: null, initialized: true });
+        return;
+      }
+
+      set({ currentUser: fetchedCurrentUser, initialized: true });
     } catch (error) {
-      console.error("Error in fetching user:", error);
-      set({
-        error: (error as Error).message || "Failed to fetch user",
-        currentUser: null,
-      });
+      console.error("Error fetching user:", error);
+      set({ error: (error as Error).message || "Failed to fetch user" });
     } finally {
-      set({ loading: false });
+      set({ loading: false, actionType: "" });
     }
   },
 }));

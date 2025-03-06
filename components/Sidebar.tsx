@@ -48,12 +48,12 @@ const sidebarStructure = [
         subLinks: [
           {
             name: "All Family Owners",
-            href: "/family-owners",
+            href: "/dashboard/family",
             icon: <User size={18} />,
           },
           {
             name: "Dependents",
-            href: "/family-owners/dependents",
+            href: "/dashboard/dependents",
             icon: <UserPlus size={18} />,
           },
         ],
@@ -83,7 +83,7 @@ const sidebarStructure = [
   },
 
   {
-    name: "Students",
+    name: "Student Management",
     links: [
       {
         name: "Students",

@@ -166,6 +166,7 @@ export const GET_CAREBUSINESS = gql`
         location
         latitude
         longitude
+        isApproved
       }
       cacRegDocument
       memorandumOfAssociation
@@ -366,7 +367,7 @@ export const GET_STUDENT = gql`
 // Get all dependents
 export const GET_DEPENDENTS = gql`
   query GetDependents {
-    getDependents {
+    adminGetDependents {
       id
       family {
         id
@@ -378,6 +379,7 @@ export const GET_DEPENDENTS = gql`
           city
           country
           dob
+          profilePics
           email
           gender
           lastName
@@ -411,80 +413,78 @@ export const GET_DEPENDENTS = gql`
           phoneNo
           address
         }
-        student {
+        careHome {
           id
-          user {
+          careBusiness {
             id
-            accountType
-            address
-            firstName
-            city
-            country
-            dob
-            email
-            gender
-            lastName
-            latitude
-            longitude
-            paymentCurrency
-            phoneNo
-            state
+            cacRegDocument
+            memorandumOfAssociation
+            businessEmail
             isApproved
+            homes {
+              id
+              name
+              phoneNo
+              location
+            }
           }
           availability {
             id
             day
             startTime
             endTime
-            applyToAllDays
             applyToAllWeeks
           }
-          incomingRequests {
+          reviews {
             id
-            status
-            serviceType
-            duration
-            price
-          }
-          idCard
-          certificate
-          careExperienceLength
-          accessToTransport
-          isApproved
-        }
-        careBusiness {
-          id
-          businessEmail
-          cacRegDocument
-          user {
-            firstName
-            lastName
-            phoneNo
-          }
-          homes {
-            id
-            name
-            phoneNo
+            date
+            rating
+            review
           }
           isApproved
         }
         scheduledDate
-        scheduledTime
-        status
+        scheduledStartTime
+        scheduledEndTime
+        description
       }
       careLogs {
         id
-        student {
-          user {
-            firstName
-            lastName
-            gender
-            phoneNo
-            email
-          }
+        carehome {
+          id
+          name
         }
         notes
         createdAt
+      }
+
+      student {
+        id
+        user {
+          id
+          address
+          firstName
+          city
+          country
+          dob
+          profilePics
+          email
+          gender
+          lastName
+          phoneNo
+          state
+        }
+        availability {
+          id
+          day
+          startTime
+          endTime
+          applyToAllDays
+          applyToAllWeeks
+        }
+        idCard
+        certificate
+        careExperienceLength
       }
 
       outgoingRequests {
@@ -501,7 +501,7 @@ export const GET_DEPENDENTS = gql`
 // Get single dependent
 export const GET_DEPENDENT = gql`
   query GetDependent($id: ID!) {
-    getDependent(id: $id) {
+    adminGetDependent(id: $id) {
       id
       family {
         id
@@ -513,6 +513,7 @@ export const GET_DEPENDENT = gql`
           city
           country
           dob
+          profilePics
           email
           gender
           lastName
@@ -546,80 +547,78 @@ export const GET_DEPENDENT = gql`
           phoneNo
           address
         }
-        student {
+        careHome {
           id
-          user {
+          careBusiness {
             id
-            accountType
-            address
-            firstName
-            city
-            country
-            dob
-            email
-            gender
-            lastName
-            latitude
-            longitude
-            paymentCurrency
-            phoneNo
-            state
+            cacRegDocument
+            memorandumOfAssociation
+            businessEmail
             isApproved
+            homes {
+              id
+              name
+              phoneNo
+              location
+            }
           }
           availability {
             id
             day
             startTime
             endTime
-            applyToAllDays
             applyToAllWeeks
           }
-          incomingRequests {
+          reviews {
             id
-            status
-            serviceType
-            duration
-            price
-          }
-          idCard
-          certificate
-          careExperienceLength
-          accessToTransport
-          isApproved
-        }
-        careBusiness {
-          id
-          businessEmail
-          cacRegDocument
-          user {
-            firstName
-            lastName
-            phoneNo
-          }
-          homes {
-            id
-            name
-            phoneNo
+            date
+            rating
+            review
           }
           isApproved
         }
         scheduledDate
-        scheduledTime
-        status
+        scheduledStartTime
+        scheduledEndTime
+        description
       }
       careLogs {
         id
-        student {
-          user {
-            firstName
-            lastName
-            gender
-            phoneNo
-            email
-          }
+        carehome {
+          id
+          name
         }
         notes
         createdAt
+      }
+
+      student {
+        id
+        user {
+          id
+          address
+          firstName
+          city
+          country
+          dob
+          profilePics
+          email
+          gender
+          lastName
+          phoneNo
+          state
+        }
+        availability {
+          id
+          day
+          startTime
+          endTime
+          applyToAllDays
+          applyToAllWeeks
+        }
+        idCard
+        certificate
+        careExperienceLength
       }
 
       outgoingRequests {
@@ -639,6 +638,13 @@ export const GET_ALL_CAREHOMES = gql`
       id
       careBusiness {
         id
+        user {
+          id
+          firstName
+          lastName
+          email
+          phoneNo
+        }
         cacRegDocument
         memorandumOfAssociation
         boardOfDirectors
@@ -704,6 +710,90 @@ export const GET_ALL_CAREHOMES = gql`
       location
       latitude
       longitude
+      isApproved
+    }
+  }
+`;
+
+export const GET_CAREHOME = gql`
+  query GetAllCarehomes($id: ID!) {
+    adminGetCarehomeById(id: $id) {
+      id
+      careBusiness {
+        id
+        user {
+          id
+          firstName
+          lastName
+          email
+          phoneNo
+        }
+        cacRegDocument
+        memorandumOfAssociation
+        boardOfDirectors
+        businessEmail
+        otherCertificates
+        isApproved
+      }
+      clients {
+        id
+        firstName
+        lastName
+        phoneNo
+        country
+        state
+        city
+        address
+        latitude
+        longitude
+        profilePics
+        relationship
+        dateOfBirth
+        medicalConcerns
+      }
+      students {
+        id
+      }
+      availability {
+        id
+        day
+        startTime
+        endTime
+        applyToAllDays
+        applyToAllWeeks
+      }
+
+      incomingRequests {
+        id
+        status
+        serviceType
+        duration
+        price
+      }
+      outgoingRequests {
+        id
+        status
+        serviceType
+        duration
+        price
+      }
+      name
+      hourlyPrice
+      dailyPrice
+      weeklyPrice
+      monthlyPrice
+      yearlyPrice
+      description
+      yearEstablished
+      phoneNo
+      capacity
+      availableSlots
+      amenities
+      imagesVideos
+      location
+      latitude
+      longitude
+      isApproved
     }
   }
 `;
@@ -715,6 +805,7 @@ export const GET_FAMILY_PROFILE = gql`
       user {
         id
         accountType
+
         address
         firstName
         city
@@ -995,6 +1086,18 @@ export const GET_GUARANTOR = gql`
       address
       verified
       createdAt
+    }
+  }
+`;
+
+export const GET_GUARANTORS_BY_ID = gql`
+  query GetGuarantorsByStudentId($studentId: ID!) {
+    getGuarantorsByStudentId(studentId: $studentId) {
+      id
+      firstName
+      lastName
+      email
+      phoneNo
     }
   }
 `;

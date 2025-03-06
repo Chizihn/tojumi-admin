@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import Button from "@/components/ui/Button";
 import RightSideModal from "@/components/RightSideModal";
 import { Status } from "@/types/user";
+import Link from "next/link";
 
 export default function UserDetail({ params }: { params: { id: string } }) {
   const { carebusiness, setCarebusiness, loading, fetchCarebusiness } =
@@ -231,21 +232,38 @@ export default function UserDetail({ params }: { params: { id: string } }) {
         setIsOpen={() => setViewHomes(false)}
         title="Carehomes"
       >
-        {carebusiness?.homes?.map((home) => (
-          <div key={home.id} className="bg-white rounded-lg shadow p-6 mb-4">
-            <h3 className="text-xl font-bold mb-4">{home.name}</h3>
-            <p className="text-gray-600 text-sm">Address</p>
-            <p className="mb-4">{home.location}</p>
-            <p className="text-gray-600 text-sm">Description</p>
-            <p className="mb-4">{home.description}</p>
-            <p className="text-gray-600 text-sm">Number of Slots</p>
-            <p className="mb-4">{home.availableSlots}</p>
-            <p className="text-gray-600 text-sm">Number of Capacity</p>
-            <p className="mb-4">{home.capacity}</p>
-            <p className="text-gray-600 text-sm">Approved</p>
-            <p className="mb-4">{home.isApproved}</p>
-          </div>
-        ))}
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            {carebusiness?.homes?.map((home) => (
+              <div
+                key={home.id}
+                className="bg-white rounded-lg shadow p-6 mb-4"
+              >
+                <h3 className="text-xl font-bold mb-4">{home.name}</h3>
+                <p className="text-gray-600 text-sm">Address</p>
+                <p className="mb-4">{home.location}</p>
+                <p className="text-gray-600 text-sm">Description</p>
+                <p className="mb-4">{home.description}</p>
+                <p className="text-gray-600 text-sm">Number of Slots</p>
+                <p className="mb-4">{home.availableSlots}</p>
+                <p className="text-gray-600 text-sm">Number of Capacity</p>
+                <p className="mb-4">{home.capacity}</p>
+                <p className="text-gray-600 text-sm">Approved</p>
+                <p className="mb-4">{home.isApproved}</p>
+
+                <Link
+                  href={`/dashboard/carehomes/${home.id}`}
+                  target="_black"
+                  className="text-secondary font-semibold"
+                >
+                  View home
+                </Link>
+              </div>
+            ))}
+          </>
+        )}
       </RightSideModal>
     </>
   );

@@ -9,25 +9,17 @@ import { useRouter } from "next/navigation";
 import { capitalizeFirstChar } from "@/utils";
 import client from "@/lib/client";
 import { APPROVE_STUDENT, REJECT_STUDENT } from "@/graphql/mutations";
-import { GET_STUDENT, GET_STUDENTS } from "@/graphql/queries";
+import {
+  GET_GUARANTORS_BY_ID,
+  GET_STUDENT,
+  GET_STUDENTS,
+} from "@/graphql/queries";
 import { toast } from "react-toastify";
 import Button from "@/components/ui/Button";
 import { useStudentStore } from "@/store/fetch/useStudent";
 import { Guarantor, Status } from "@/types/user";
 
-import { gql, useQuery } from "@apollo/client";
-
-export const GET_GUARANTORS_BY_ID = gql`
-  query GetGuarantorsByStudentId($studentId: ID!) {
-    getGuarantorsByStudentId(studentId: $studentId) {
-      id
-      firstName
-      lastName
-      email
-      phoneNo
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
 
 export default function StudentDetail({ params }: { params: { id: string } }) {
   const { student, loading, setStudent, fetchStudent } = useStudentStore();

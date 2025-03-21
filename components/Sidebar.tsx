@@ -106,7 +106,11 @@ const sidebarStructure = [
   {
     name: "System",
     links: [
-      { name: "Settings", href: "/settings", icon: <Settings size={18} /> },
+      {
+        name: "Settings",
+        href: "/dashboard/settings",
+        icon: <Settings size={18} />,
+      },
     ],
   },
 ];

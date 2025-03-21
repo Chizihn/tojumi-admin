@@ -4,3 +4,8 @@ export enum Currency {
   GBP = "GBP",
   NGN = "NGN",
 }
+
+export interface CareServiceType {
+  id: string;
+  name: string;
+}

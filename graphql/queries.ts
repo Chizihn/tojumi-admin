@@ -1129,3 +1129,32 @@ export const GET_GUARANTOR_BY_STUDENT_ID = gql`
     }
   }
 `;
+
+export const GET_ALL_CARESERVICETYPES = gql`
+  query GetAllCareServiceTypes {
+    getAllCareServiceTypes {
+      id
+      name
+    }
+  }
+`;
+
+export const DASHBOARD_OVERVIEW = gql`
+  query DataBaseOverview {
+    databaseOverview {
+      totalUsers
+      totalFamilies
+      totalDependents
+      totalProviders
+      totalCareHomes
+      totalStudents
+      totalGuarantors
+      totalRevenue
+      allContracts
+      activeContracts
+      pendingContracts
+      cancelledContracts
+      expiredContracts
+    }
+  }
+`;

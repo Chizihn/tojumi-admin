@@ -78,3 +78,27 @@ export const REJECT_GUARANTOR = gql`
     rejectGuarantor(id: $id)
   }
 `;
+
+export const CREATE_CARESERVICETYPE = gql`
+  mutation CreateCareServiceType($name: String!) {
+    createCareServiceType(name: $name) {
+      id
+      name
+    }
+  }
+`;
+
+export const UPDATE_CARESERVICETYPE = gql`
+  mutation UpdateCareServiceType($id: ID!, $name: String!) {
+    updateCareServiceType(id: $id, name: $name) {
+      id
+      name
+    }
+  }
+`;
+
+export const DELETE_CARESERVICETYPE = gql`
+  mutation DeleteCareServiceType($id: ID!) {
+    deleteCareServiceType(id: $id)
+  }
+`;

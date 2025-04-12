@@ -194,7 +194,7 @@ export default function UserDetail({ params }: { params: { id: string } }) {
                   <p className="text-gray-600 text-sm">Business approved?</p>
                   <p>{capitalizeFirstChar(String(carebusiness?.isApproved))}</p>
 
-                  {carebusiness?.isApproved === "PENDING" && (
+                  {carebusiness?.isApproved === Status.PENDING && (
                     <div className="flex item-center my-4 gap-5">
                       <Button
                         variant="primary"

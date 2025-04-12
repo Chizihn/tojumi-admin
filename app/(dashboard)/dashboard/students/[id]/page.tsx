@@ -10,7 +10,7 @@ import { capitalizeFirstChar } from "@/utils";
 import { GET_GUARANTORS_BY_ID } from "@/graphql/queries";
 import Button from "@/components/ui/Button";
 import { useStudentStore } from "@/store/fetch/useStudent";
-import { Guarantor, Levels } from "@/types/user";
+import { Guarantor, Levels, Status } from "@/types/user";
 
 import { useQuery } from "@apollo/client";
 
@@ -181,7 +181,7 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
                 <p className="text-gray-600 text-sm">Approved for jobs?</p>
                 <p>{capitalizeFirstChar(String(student?.isApproved))}</p>
 
-                {student?.isApproved === "PENDING" && (
+                {student?.isApproved === Status.PENDING && (
                   <div className="mt-3">
                     <select
                       value={String(selectedLevel)}

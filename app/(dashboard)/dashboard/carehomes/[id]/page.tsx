@@ -227,7 +227,7 @@ export default function CarehomeDetail({ params }: { params: { id: string } }) {
 
             <p>Approval Status: {getStatusDisplay(carehome.isApproved)}</p>
 
-            {carehome.isApproved === "PENDING" && (
+            {carehome.isApproved === Status.PENDING && (
               <div className="flex item-center my-4 gap-5">
                 <Button
                   variant="primary"

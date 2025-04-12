@@ -3,7 +3,7 @@ import client from "@/lib/client";
 import { GET_GUARANTOR, GET_GUARANTORS } from "@/graphql/queries";
 import { ACCEPT_GUARANTOR, REJECT_GUARANTOR } from "@/graphql/mutations";
 import { toast } from "react-toastify";
-import { Guarantor } from "@/types/user";
+import { Guarantor, Status } from "@/types/user";
 import { ApolloError } from "@apollo/client";
 import { capitalizeFirstChar } from "@/utils";
 
@@ -68,10 +68,10 @@ export const useGuarantorStore = create<GuarantorStore>((set) => ({
         ],
       });
 
-      if (response.data.verifyGuarantor) {
+      if (response.data.acceptGuarantor) {
         set((state) => ({
           guarantor: state.guarantor
-            ? { ...state.guarantor, verified: "true" }
+            ? { ...state.guarantor, verified: Status.APPROVED }
             : null,
           buttonLoading: false,
         }));
@@ -100,7 +100,7 @@ export const useGuarantorStore = create<GuarantorStore>((set) => ({
       if (response.data.rejectGuarantor) {
         set((state) => ({
           guarantor: state.guarantor
-            ? { ...state.guarantor, verified: "false" }
+            ? { ...state.guarantor, verified: Status.REJECTED }
             : null,
           buttonLoading: false,
         }));

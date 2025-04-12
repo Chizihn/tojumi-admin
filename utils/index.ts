@@ -193,3 +193,25 @@ export const currencyFormatter = (amount: number, currency: string) => {
     currency: currency,
   }).format(amount);
 };
+
+export function formatDate(
+  dateInput: string | number | Date,
+  options?: Intl.DateTimeFormatOptions,
+  locale: string = "en-US"
+): string {
+  try {
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) return "Invalid date";
+
+    const defaultOptions: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    return date.toLocaleDateString(locale, { ...defaultOptions, ...options });
+  } catch (err) {
+    console.error("Error formatting date:", err);
+    return "Invalid date";
+  }
+}

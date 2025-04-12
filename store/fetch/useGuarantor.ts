@@ -4,6 +4,8 @@ import { GET_GUARANTOR, GET_GUARANTORS } from "@/graphql/queries";
 import { ACCEPT_GUARANTOR, REJECT_GUARANTOR } from "@/graphql/mutations";
 import { toast } from "react-toastify";
 import { Guarantor } from "@/types/user";
+import { ApolloError } from "@apollo/client";
+import { capitalizeFirstChar } from "@/utils";
 
 interface GuarantorStore {
   guarantors: Guarantor[];
@@ -75,8 +77,9 @@ export const useGuarantorStore = create<GuarantorStore>((set) => ({
         }));
         toast.success("Guarantor verified successfully!");
       }
-    } catch (error) {
-      toast.error("Failed to verify guarantor");
+    } catch (error: unknown) {
+      const errorMessage = (error as ApolloError).message;
+      toast.error(capitalizeFirstChar(errorMessage));
       console.error("Error verifying guarantor:", error);
       set({ buttonLoading: false });
     }
@@ -103,8 +106,9 @@ export const useGuarantorStore = create<GuarantorStore>((set) => ({
         }));
         toast.success("Guarantor rejected successfully!");
       }
-    } catch (error) {
-      toast.error("Failed to reject guarantor");
+    } catch (error: unknown) {
+      const errorMessage = (error as ApolloError).message;
+      toast.error(capitalizeFirstChar(errorMessage));
       console.error("Error rejecting guarantor:", error);
       set({ buttonLoading: false });
     }

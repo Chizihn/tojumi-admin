@@ -4,15 +4,16 @@ import Loader from "@/components/Loader";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { capitalizeFirstChar } from "@/utils";
+import { capitalizeFirstChar, formatDate } from "@/utils";
 import client from "@/lib/client";
 
 import { GET_GUARANTOR, GET_GUARANTORS } from "@/graphql/queries";
 import { toast } from "react-toastify";
 // import Button from "@/components/ui/Button";
-import { Guarantor } from "@/types/user";
+import { Guarantor, Status } from "@/types/user";
 import { ACCEPT_GUARANTOR, REJECT_GUARANTOR } from "@/graphql/mutations";
 import Button from "@/components/ui/Button";
+import { ApolloError } from "@apollo/client";
 
 export default function GuarantorDetail({
   params,
@@ -60,16 +61,17 @@ export default function GuarantorDetail({
           { query: GET_GUARANTORS },
         ],
       });
-      if (response?.data?.verifyGuarantor) {
+      if (response?.data?.acceptGuarantor) {
         toast.success("Guarantor verified successfully!");
         // Update local state
         setGuarantor({
           ...guarantor,
-          verified: "true",
+          verified: Status.APPROVED,
         } as Guarantor);
       }
-    } catch (error) {
-      toast.error("Failed to verify guarantor");
+    } catch (error: unknown) {
+      const errorMessage = (error as ApolloError).message;
+      toast.error(capitalizeFirstChar(errorMessage));
       console.error("Error verifying guarantor:", error);
     } finally {
       setButtonLoading(false);
@@ -94,11 +96,12 @@ export default function GuarantorDetail({
         // Update local state
         setGuarantor({
           ...guarantor,
-          verified: "false",
+          verified: Status.REJECTED,
         } as Guarantor);
       }
-    } catch (error) {
-      toast.error("Failed to reject guarantor");
+    } catch (error: unknown) {
+      const errorMessage = (error as ApolloError).message;
+      toast.error(capitalizeFirstChar(errorMessage));
       console.error("Error rejecting guarantor:", error);
     } finally {
       setButtonLoading(false);
@@ -179,7 +182,7 @@ export default function GuarantorDetail({
                   </div>
                   <div>
                     <p className="text-gray-600 text-sm">Date Added</p>
-                    <p>{new Date(guarantor.createdAt).toLocaleDateString()}</p>
+                    <p>{formatDate(guarantor.createdAt)}</p>
                   </div>
                   <div>
                     <p className="text-gray-600 text-sm">ID</p>
@@ -216,32 +219,52 @@ export default function GuarantorDetail({
                 <p className="text-gray-600 text-sm">BVN</p>
                 <p>{guarantor.bvn || "Not provided"}</p>
               </div>
+
               <div>
                 <p className="text-gray-600 text-sm">Verification Status</p>
-                <p>{capitalizeFirstChar(guarantor.verified || "N/A")}</p>
-                {!guarantor.verified && (
-                  <div className="flex items-center my-4 gap-5">
-                    <Button
-                      variant="primary"
-                      type="button"
-                      loading={buttonLoading && actionType === "verify"}
-                      disabled={buttonLoading}
-                      onClick={handleVerifyGuarantor}
-                    >
-                      Verify
-                    </Button>
-                    <Button
-                      variant="danger"
-                      type="button"
-                      loading={buttonLoading && actionType === "reject"}
-                      disabled={buttonLoading}
-                      onClick={handleRejectGuarantor}
-                    >
-                      Reject
-                    </Button>
-                  </div>
-                )}
+                <p className="capitalize">{guarantor.verified || "N/A"}</p>
+
+                {/* Show actions based on status */}
+                {(() => {
+                  switch (guarantor.verified) {
+                    case Status.PENDING:
+                      return (
+                        <div className="flex items-center my-4 gap-5">
+                          <Button
+                            variant="primary"
+                            type="button"
+                            loading={buttonLoading && actionType === "verify"}
+                            disabled={buttonLoading}
+                            onClick={handleVerifyGuarantor}
+                          >
+                            Verify
+                          </Button>
+                          <Button
+                            variant="danger"
+                            type="button"
+                            loading={buttonLoading && actionType === "reject"}
+                            disabled={buttonLoading}
+                            onClick={handleRejectGuarantor}
+                          >
+                            Reject
+                          </Button>
+                        </div>
+                      );
+                    case Status.REJECTED:
+                      return (
+                        <div className="my-4">
+                          <Button variant="secondary" disabled>
+                            Rejected
+                          </Button>
+                        </div>
+                      );
+                    case Status.APPROVED:
+                    default:
+                      return null;
+                  }
+                })()}
               </div>
+
               <div className="my-2">
                 Visit the specific student profile to verify guarantor.
               </div>

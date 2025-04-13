@@ -222,7 +222,9 @@ export default function GuarantorDetail({
 
               <div>
                 <p className="text-gray-600 text-sm">Verification Status</p>
-                <p className="capitalize">{guarantor.verified || "N/A"}</p>
+                <p className="capitalize">
+                  {capitalizeFirstChar(guarantor.verified) || "N/A"}
+                </p>
 
                 {/* Show actions based on status */}
                 {(() => {

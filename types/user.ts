@@ -19,13 +19,13 @@ export enum ServiceType {
 }
 
 export enum Status {
-  PENDING = "Pending",
-  APPROVED = "Approved",
-  REJECTED = "Rejected",
-  ACTIVE = "Aactive",
-  EXPIRED = "Expired",
-  SUCCESS = "Success",
-  FAILED = "Failed",
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  ACTIVE = "ACTIVE",
+  EXPIRED = "EXPIRED",
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
 }
 
 export interface Auth {

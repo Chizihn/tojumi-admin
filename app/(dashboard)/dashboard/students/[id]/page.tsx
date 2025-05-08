@@ -51,6 +51,18 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
 
   const guarantors: Guarantor[] = data?.getGuarantorsByStudentId || [];
 
+  const getFileType = (url: string) => {
+    if (!url) return null;
+    const extension = url.split(".").pop()?.toLowerCase();
+    if (!extension) return null;
+    if (["jpg", "jpeg", "png", "gif", "webp"].includes(extension)) {
+      return "image";
+    } else if (extension === "pdf") {
+      return "pdf";
+    }
+    return null;
+  };
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <button
@@ -145,11 +157,53 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
                 )}
               </div>
               <div>
-                <p className="text-gray-600 text-sm">Documents</p>
-                <ul className="list-disc pl-5 text-sm">
-                  <li>ID Card</li>
-                  <li>Certificates</li>
-                </ul>
+                <p className="text-gray-600 text-sm mb-2">Documents</p>
+                <div className="space-y-4">
+                  {student.idCard && (
+                    <div>
+                      <p className="text-sm font-medium mb-1">ID Card</p>
+                      <div className="border rounded-lg overflow-hidden">
+                        {getFileType(student.idCard) === "image" ? (
+                          <Image
+                            src={student.idCard}
+                            alt="ID Card"
+                            width={300}
+                            height={200}
+                            className="object-contain w-full"
+                          />
+                        ) : (
+                          <iframe
+                            src={student.idCard}
+                            className="w-full h-[300px]"
+                            title="ID Card Preview"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {student.certificate && (
+                    <div>
+                      <p className="text-sm font-medium mb-1">Certificate</p>
+                      <div className="border rounded-lg overflow-hidden">
+                        {getFileType(student.certificate) === "image" ? (
+                          <Image
+                            src={student.certificate}
+                            alt="Certificate"
+                            width={300}
+                            height={200}
+                            className="object-contain w-full"
+                          />
+                        ) : (
+                          <iframe
+                            src={student.certificate}
+                            className="w-full h-[300px]"
+                            title="Certificate Preview"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div>

@@ -11,6 +11,7 @@ import { GET_GUARANTORS_BY_ID } from "@/graphql/queries";
 import Button from "@/components/ui/Button";
 import { useStudentStore } from "@/store/fetch/useStudent";
 import { Guarantor, Levels, Status } from "@/types/user";
+import DocumentPreviewModal from "@/components/DocumentPreviewModal";
 
 import { useQuery } from "@apollo/client";
 
@@ -28,6 +29,11 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
   } = useStudentStore();
 
   const [selectedLevel, setSelectedLevel] = useState<Levels | null>(null);
+  const [previewDocument, setPreviewDocument] = useState<{
+    url: string;
+    alt: string;
+    type: "image" | "pdf";
+  } | null>(null);
 
   useEffect(() => {
     fetchStudent(params.id);
@@ -164,19 +170,41 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
                       <p className="text-sm font-medium mb-1">ID Card</p>
                       <div className="border rounded-lg overflow-hidden">
                         {getFileType(student.idCard) === "image" ? (
-                          <Image
-                            src={student.idCard}
-                            alt="ID Card"
-                            width={300}
-                            height={200}
-                            className="object-contain w-full"
-                          />
+                          <div
+                            className="cursor-pointer"
+                            onClick={() =>
+                              setPreviewDocument({
+                                url: student.idCard,
+                                alt: "ID Card",
+                                type: "image",
+                              })
+                            }
+                          >
+                            <Image
+                              src={student.idCard}
+                              alt="ID Card"
+                              width={100}
+                              height={70}
+                              className="object-cover w-[100px] h-[70px] hover:opacity-80 transition-opacity"
+                            />
+                          </div>
                         ) : (
-                          <iframe
-                            src={student.idCard}
-                            className="w-full h-[300px]"
-                            title="ID Card Preview"
-                          />
+                          <div
+                            className="cursor-pointer"
+                            onClick={() =>
+                              setPreviewDocument({
+                                url: student.idCard,
+                                alt: "ID Card",
+                                type: "pdf",
+                              })
+                            }
+                          >
+                            <iframe
+                              src={student.idCard}
+                              className="w-[100px] h-[70px]"
+                              title="ID Card Preview"
+                            />
+                          </div>
                         )}
                       </div>
                     </div>
@@ -186,19 +214,41 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
                       <p className="text-sm font-medium mb-1">Certificate</p>
                       <div className="border rounded-lg overflow-hidden">
                         {getFileType(student.certificate) === "image" ? (
-                          <Image
-                            src={student.certificate}
-                            alt="Certificate"
-                            width={300}
-                            height={200}
-                            className="object-contain w-full"
-                          />
+                          <div
+                            className="cursor-pointer"
+                            onClick={() =>
+                              setPreviewDocument({
+                                url: student.certificate,
+                                alt: "Certificate",
+                                type: "image",
+                              })
+                            }
+                          >
+                            <Image
+                              src={student.certificate}
+                              alt="Certificate"
+                              width={100}
+                              height={70}
+                              className="object-cover w-[100px] h-[70px] hover:opacity-80 transition-opacity"
+                            />
+                          </div>
                         ) : (
-                          <iframe
-                            src={student.certificate}
-                            className="w-full h-[300px]"
-                            title="Certificate Preview"
-                          />
+                          <div
+                            className="cursor-pointer"
+                            onClick={() =>
+                              setPreviewDocument({
+                                url: student.certificate,
+                                alt: "Certificate",
+                                type: "pdf",
+                              })
+                            }
+                          >
+                            <iframe
+                              src={student.certificate}
+                              className="w-[100px] h-[70px]"
+                              title="Certificate Preview"
+                            />
+                          </div>
                         )}
                       </div>
                     </div>
@@ -209,9 +259,16 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
               <div>
                 <p className="text-gray-600 text-sm">Services:</p>
                 <p>
-                  {student.careServiceTypes?.map((service) => (
-                    <span key={service.id}>{service.name}</span>
-                  )) || "N/A"}{" "}
+                  {student.careServiceTypes?.length > 0
+                    ? student.careServiceTypes.map((service, index) => (
+                        <span key={service.id}>
+                          {service.name}
+                          {index < student.careServiceTypes.length - 1
+                            ? ", "
+                            : ""}
+                        </span>
+                      ))
+                    : "N/A"}
                 </p>
               </div>
               <div>
@@ -286,6 +343,15 @@ export default function StudentDetail({ params }: { params: { id: string } }) {
         <div className="bg-white rounded-lg shadow p-6">
           <p>User not found</p>
         </div>
+      )}
+      {previewDocument && (
+        <DocumentPreviewModal
+          isOpen={true}
+          onClose={() => setPreviewDocument(null)}
+          documentUrl={previewDocument.url}
+          documentType={previewDocument.type}
+          alt={previewDocument.alt}
+        />
       )}
     </div>
   );
